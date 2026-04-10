@@ -10,7 +10,7 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-//Route::apiResource('events', EventController::class)->middleware('auth:sanctum');
+Route::apiResource('events', EventController::class)->names('apievents')->middleware('auth:sanctum');
 //Route::apiResource('venues', VenueController::class)->middleware('auth:sanctum');
 
 Route::get('index-active-events', [EventController::class, 'indexActiveEvents'])->middleware('auth:sanctum');
