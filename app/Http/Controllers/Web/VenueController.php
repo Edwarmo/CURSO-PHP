@@ -15,7 +15,8 @@ class VenueController extends Controller
     public function index()
     {
         return Inertia::render('Venues/Index', [
-            'venues' => Venue::all()
+            'venues' => Venue::all(),
+            'message' => session('message'),
         ]);
     }
 
@@ -24,7 +25,7 @@ class VenueController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Venues/Create');
     }
 
     /**
@@ -32,7 +33,16 @@ class VenueController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'venue_name' => 'required|string|max:255',
+            'venue_address' => 'required|string|max:255',
+            'venue_max_capacity' => 'required|integer|min:1',
+        ]);
+
+        Venue::create($validated);
+
+        return redirect()->route('venues.index')
+            ->with('message', 'Venue created successfully.');
     }
 
     /**
@@ -50,7 +60,9 @@ class VenueController extends Controller
      */
     public function edit(Venue $venue)
     {
-        //
+        return Inertia::render('Venues/Edit', [
+            'venue' => $venue
+        ]);
     }
 
     /**
@@ -58,7 +70,16 @@ class VenueController extends Controller
      */
     public function update(Request $request, Venue $venue)
     {
-        //
+        $validated = $request->validate([
+            'venue_name' => 'required|string|max:255',
+            'venue_address' => 'required|string|max:255',
+            'venue_max_capacity' => 'required|integer|min:1',
+        ]);
+
+        $venue->update($validated);
+
+        return redirect()->route('venues.index')
+            ->with('message', 'Venue updated successfully.');
     }
 
     /**
@@ -66,6 +87,9 @@ class VenueController extends Controller
      */
     public function destroy(Venue $venue)
     {
-        //
+        $venue->delete();
+
+        return redirect()->route('venues.index')
+            ->with('message', 'Venue deleted successfully.');
     }
 }
