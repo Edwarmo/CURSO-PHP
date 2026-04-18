@@ -23,6 +23,11 @@ class Event extends Model
         'event_status'
     ];
 
+    protected $casts = [
+        'event_date' => 'datetime',
+        'event_is_virtual' => 'boolean',
+    ];
+
     function venue()
     {
         return $this->belongsTo(Venue::class, 'fk_venue_event', 'id_venue');
