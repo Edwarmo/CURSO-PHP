@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreVenueRequest;
 use App\Http\Requests\UpdateVenueRequest;
 use App\Models\Venue;
+use Illuminate\Support\Facades\Storage;
 
 class VenueController extends Controller
 {
@@ -22,7 +23,14 @@ class VenueController extends Controller
      */
     public function store(StoreVenueRequest $request)
     {
-        $venue = Venue::create($request->validated());
+        $validated = $request->validated();
+
+        if ($request->hasFile('venue_image')) {
+            $imagePath = $request->file('venue_image')->store('venue-images', 'public');
+            $validated['venue_image'] = $imagePath;
+        }
+
+        $venue = Venue::create($validated);
         return response()->json($venue, 201);
     }
 
@@ -39,7 +47,18 @@ class VenueController extends Controller
      */
     public function update(UpdateVenueRequest $request, Venue $venue)
     {
-        $venue->update($request->validated());
+        $validated = $request->validated();
+
+        if ($request->hasFile('venue_image')) {
+            // Delete old image if exists
+            if ($venue->venue_image) {
+                Storage::disk('public')->delete($venue->venue_image);
+            }
+            $imagePath = $request->file('venue_image')->store('venue-images', 'public');
+            $validated['venue_image'] = $imagePath;
+        }
+
+        $venue->update($validated);
         return response()->json($venue);
     }
 

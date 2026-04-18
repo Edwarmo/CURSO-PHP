@@ -77,6 +77,10 @@ const deleteVenue = () => {
                                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                         Maximum Capacity
                                     </th>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                        Image
+                                    </th>
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                         Actions
                                     </th>
@@ -95,6 +99,10 @@ const deleteVenue = () => {
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                         {{ venue.venue_max_capacity }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                        <img v-if="venue.venue_image" :src="'/storage/' + venue.venue_image" alt="Venue Image" class="w-16 h-16 object-cover rounded-md">
+                                        <span v-else class="text-gray-400">No image</span>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                         <Link :href="route('venues.show', venue.id_venue)"

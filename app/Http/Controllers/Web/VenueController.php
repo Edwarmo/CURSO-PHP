@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Venue;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Storage;
 
 class VenueController extends Controller
 {
@@ -37,7 +38,13 @@ class VenueController extends Controller
             'venue_name' => 'required|string|max:255',
             'venue_address' => 'required|string|max:255',
             'venue_max_capacity' => 'required|integer|min:1',
+            'venue_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
+
+        if ($request->hasFile('venue_image')) {
+            $imagePath = $request->file('venue_image')->store('venue-images', 'public');
+            $validated['venue_image'] = $imagePath;
+        }
 
         Venue::create($validated);
 
@@ -74,7 +81,17 @@ class VenueController extends Controller
             'venue_name' => 'required|string|max:255',
             'venue_address' => 'required|string|max:255',
             'venue_max_capacity' => 'required|integer|min:1',
+            'venue_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
+
+        if ($request->hasFile('venue_image')) {
+            // Delete old image if exists
+            if ($venue->venue_image) {
+                Storage::disk('public')->delete($venue->venue_image);
+            }
+            $imagePath = $request->file('venue_image')->store('venue-images', 'public');
+            $validated['venue_image'] = $imagePath;
+        }
 
         $venue->update($validated);
 

@@ -13,7 +13,8 @@ class Venue extends Model
     protected $fillable = [
         'venue_name',
         'venue_address',
-        'venue_max_capacity'
+        'venue_max_capacity',
+        'venue_image'
     ];
 
     public function events()

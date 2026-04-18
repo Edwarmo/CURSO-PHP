@@ -21,7 +21,11 @@ Route::middleware([
     'verified',
 ])->group(function () {
     Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
+        $events = \App\Models\Event::with('venue')
+            ->where('event_status', true)
+            ->orderBy('event_date', 'asc')
+            ->get();
+        return Inertia::render('Dashboard', ['events' => $events]);
     })->name('dashboard');
 
     Route::resource('venues', VenueController::class);

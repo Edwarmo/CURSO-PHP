@@ -10,10 +10,22 @@ const form = useForm({
     venue_name: '',
     venue_address: '',
     venue_max_capacity: '',
+    venue_image: null,
+    imagePreview: null,
 });
 
+const handleImageChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+        form.venue_image = file;
+        form.imagePreview = URL.createObjectURL(file);
+    }
+};
+
 const submit = () => {
-    form.post(route('venues.store'));
+    form.post(route('venues.store'), {
+        forceFormData: true,
+    });
 };
 </script>
 
@@ -73,6 +85,29 @@ const submit = () => {
                                     min="1"
                                 />
                                 <InputError class="mt-2" :message="form.errors.venue_max_capacity"/>
+                            </div>
+
+                            <div class="mb-4">
+                                <InputLabel for="venue_image" value="Venue Image" class="dark:text-gray-300"/>
+                                <input
+                                    id="venue_image"
+                                    type="file"
+                                    class="mt-1 block w-full text-sm text-gray-500 dark:text-gray-400
+                                           file:mr-4 file:py-2 file:px-4
+                                           file:rounded-md file:border-0
+                                           file:text-sm file:font-semibold
+                                           file:bg-indigo-50 file:text-indigo-700
+                                           dark:file:bg-indigo-900 dark:file:text-indigo-300
+                                           hover:file:bg-indigo-100 dark:hover:file:bg-indigo-800"
+                                    @change="handleImageChange"
+                                    accept="image/*"
+                                />
+                                <InputError class="mt-2" :message="form.errors.venue_image"/>
+                            </div>
+
+                            <div v-if="form.imagePreview" class="mb-4">
+                                <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Preview:</p>
+                                <img :src="form.imagePreview" alt="Venue Image Preview" class="w-48 h-48 object-cover rounded-md">
                             </div>
 
                             <div class="flex items-center justify-end mt-4">
