@@ -47,9 +47,10 @@ RUN mkdir -p bootstrap/cache \
     && chmod -R 775 bootstrap/cache storage
 RUN composer dump-autoload --optimize --no-dev --no-scripts && \
     rm /usr/bin/composer && \
-    php artisan package:discover --ansi && \
-    php artisan config:cache && \
-    php artisan route:cache && \
-    php artisan view:cache
+    php artisan package:discover --ansi
 EXPOSE 8080
-CMD php artisan migrate --force && frankenphp php-server --listen :${PORT:-8080} --root /app/public
+CMD php artisan config:cache && \
+    php artisan route:cache && \
+    php artisan view:cache && \
+    php artisan migrate --force && \
+    frankenphp php-server --listen :${PORT:-8080} --root /app/public
