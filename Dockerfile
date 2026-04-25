@@ -1,10 +1,8 @@
-FROM php:8.2-fpm
+FROM serversideup/php:8.2-cli
 
-RUN apt-get update && apt-get install -y \
-    libpng-dev libjpeg-dev libzip-dev libpq-dev \
-    zip unzip git curl nodejs npm \
-    && docker-php-ext-install gd zip pdo pdo_pgsql \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+USER root
+
+RUN install-php-extensions gd zip pdo_pgsql
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
