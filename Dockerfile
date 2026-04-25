@@ -30,21 +30,17 @@ FROM dunglas/frankenphp:php8.4
 RUN install-php-extensions gd zip pdo_pgsql pcntl dom
 WORKDIR /app
 
-# Copiar código fuente
-COPY . .
-
-# Copiar vendor y assets compilados
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 COPY --from=composer-deps /app/vendor ./vendor
 COPY --from=node-assets /app/public/build ./public/build
+COPY . .
 
-# Generar autoloader y descubrir paquetes (artisan ya está disponible)
-RUN composer dump-autoload --optimize --no-dev --no-scripts
-RUN php artisan package:discover --ansi
-
-# Cachear configuración para producción
-RUN php artisan key:generate --force \
-    && php artisan config:cache \
-    && php artisan route:cache \
-    && php artisan view:cache
+RUN composer dump-autoload --optimize --no-dev --no-scripts && \
+    rm /usr/bin/composer && \
+    php artisan package:discover --ansi && \
+    php artisan key:generate --force && \
+    php artisan config:cache && \
+    php artisan route:cache && \
+    php artisan view:cache
 
 CMD php artisan migrate --force && frankenphp php-server --listen :${PORT:-8080} --root /app/public
