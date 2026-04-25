@@ -1,0 +1,17 @@
+node_modules
+vendor
+.env
+.env.*
+!.env.example
+tests
+*.test.*
+.git
+.gitignore
+.editorconfig
+README.md
+storage/logs/*
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+bootstrap/cache/*
+public/hot
